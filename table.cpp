@@ -166,20 +166,28 @@ void Table::read_file(std::string f_str) {
 	setColumn(0); // *same*
 	if (!file) { incorrect_input(); }
 	else {
-		// a m�trix el�m�retez�s�re szolg�l
+		// a matrix elomeretezesere szolgal
+		int max = 0;
+		int rows = 0;
 		while (std::getline(file, line))
 		{
+			int cols = 0;
 			std::istringstream iss(line);
 			std::string result;
-			int cols = 1; // feltetelezzuk hogy nincs ures sorunk
 			while (std::getline(iss, result, sep))
 			{
 				cols++;
 			}
-			if (getColumn() < cols) { setColumn(cols); }
-			setRow(getRow() + 1);
+			if ( cols > max) {
+				max = cols;
+			}
+			rows++;
 		}
-		// a m�trix feltoltesere szolgal a csv filebol valo rekordokkal
+		addRow(rows);
+		addColumn(max);
+		file.clear(); // vissza allitjuk...
+		file.seekg(0, std::ios_base::beg); // .. a stream position-t
+		// a matrix feltoltesere szolgal a csv filebol valo rekordokkal
 		int i = 0;
 		int j = 0; // i a sor j az oszlop koordinata
 		while (std::getline(file, line))
@@ -188,9 +196,10 @@ void Table::read_file(std::string f_str) {
 			std::string result;
 			while (std::getline(iss, result, sep))
 			{
-				cellcontainer[i][j] = result;
+				cellcontainer.at(i).at(j) = result;
 				j += 1;
 			}
+			j = 0;
 			i += 1;
 		}
 	}
@@ -207,4 +216,5 @@ void Table::out_file(std::string filename, char sep) {
 		}
 		if (i != (cellcontainer.size() - 1)) { out << '\n'; }
 	}
+	std::cout << "File saved succesfully as: " << filename << std::endl;
 }

@@ -8,16 +8,17 @@
 //char* argv;
 int main(int argc, char** argv)
 {
-	std::cout << argc;
 	if (argc == 2) {
 		Table* table = new Table;
 		std::string command;
 		std::vector<std::string> tokens;
-		std::string STRING;
-		std::cout << argv[1] << std::endl;
-		STRING = argv[1];
-		if ((STRING.substr(STRING.back() - 4, STRING.back())) == ".csv") {
-			table->read_file(STRING);
+		std::string arg_str;
+		std::string str2;
+		arg_str = argv[1];
+		str2 = arg_str.substr(arg_str.length() - 4, arg_str.length());
+		std::cout << str2 << std::endl;
+		if ((str2) == ".csv") {
+			table->read_file(arg_str);
 			g2g(argv);
 			working_table(command, tokens, table);
 		}
@@ -27,15 +28,15 @@ int main(int argc, char** argv)
 		Table* table = new Table;
 		std::string command;
 		std::vector<std::string> tokens;
-		std::string F_STRING;
-		std::string S_STRING;
-		F_STRING = argv[1];
-		S_STRING = argv[2];
-		if ((F_STRING.substr(F_STRING.back() - 4, F_STRING.back() + 1)) == ".csv") {
-			if ((S_STRING.substr(S_STRING.back() - 4, S_STRING.back() + 1)) == "-sep") {
+		std::string file_str;
+		std::string sep_str;
+		file_str = argv[1];
+		sep_str = argv[2];
+		if ((file_str.substr(file_str.length() - 4, file_str.length() + 1)) == ".csv") {
+			if ((sep_str.substr(sep_str.length() - 4, sep_str.length() + 1)) == "-sep") {
 				table->setSep(argv[3][0]);
 			}
-			table->read_file(F_STRING);
+			table->read_file(file_str);
 			g2g(argv);
 			working_table(command, tokens, table);
 		}
@@ -159,13 +160,17 @@ void working_table(std::string& command, std::vector<std::string>& tokens, Table
 			else if (words < 4) {
 				process_command(tokens, words, command);
 				std::string f_name = tokens[0];
-				table->out_file(f_name, table->getSep());
+				table->out_file(f_name, ';');
 			}
 			else if (words == 4) {
 				process_command(tokens, words, command);
-				std::string f_name = tokens[0];
-				char n_sep = tokens[2][0];
-				table->out_file(f_name, n_sep);
+				std::string cmd = tokens[1];
+				if (cmd == "-sep") {
+					std::string f_name = tokens[0];
+					char n_sep = tokens[2][0];
+					table->out_file(f_name, n_sep);
+				}
+				else { incorrect_input(); }
 			}
 			else { incorrect_input(); }
 		}
