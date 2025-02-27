@@ -2,5 +2,5 @@
 ___
 # Project meant to implement a sheet editing program inside of CLI
 
-__
+___
 "Future together"
